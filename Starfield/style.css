@@ -1,0 +1,100 @@
+:root {
+		--starfield-transition-duration: 250ms;
+		--starfield-transition-ease: ease-out;
+		--starfield-bg-color-rgb: 0, 0, 0;
+		--starfield-radius: 1000;
+		--starfield-3d-perspective: 1000px;
+		--starfield-rotation-duration: 25s;
+		--starfield-rotation-play-state: paused;
+		--starfield-star-max-length: 50;
+}
+
+*, *::before, *::after {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		box-sizing: border-box;
+}
+*:focus {
+		outline: none;
+}
+body {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+}
+.starfield {
+		--_radius: calc(var(--starfield-radius) / 2);
+		width: 100%;
+		height: 100%;
+		background-color: rgb(var(--starfield-bg-color-rgb));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+}
+.starfield:hover {
+		--starfield-rotation-play-state: running;
+}
+.starfield:hover .star {
+		width: calc(((var(--starfield-star-max-length) * 3) - ((var(--_r) / 2 + 0.5) * (var(--starfield-star-max-length) * 3))) * 1px);
+		--_speed: calc((var(--_r) / 2 + 0.5) * 2s + 1s);
+}
+.starfield .star-wrapper {
+		perspective: var(--starfield-3d-perspective);
+		transform-style: preserve-3d;
+		animation: star-wrapper-animation var(--starfield-rotation-duration) normal linear infinite var(--starfield-rotation-play-state);
+		position: relative;
+}
+@keyframes star-wrapper-animation {
+		from {transform: rotateZ(0deg);}
+		to {transform: rotateZ(360deg);}
+}
+.starfield .star {
+		--_radius-s: calc((var(--_r) / 2 + 0.5) * (var(--_radius) / (var(--_radius) / 100)));
+		--_radius-e: calc((var(--_r) / 2 + 0.5) * var(--_radius) + var(--_radius));
+		--_segment: calc(var(--_r) * 100 * 2 * 3.141592653589793);
+		--_xp-s: calc(var(--_radius-s) * cos(var(--_segment)));
+		--_yp-s: calc(var(--_radius-s) * sin(var(--_segment)));
+		--_zp-s: calc((var(--_r) / 2 + 0.5) * (var(--_radius) * -1) - var(--_radius));
+		--_xp-e: calc(var(--_radius-e) * cos(var(--_segment)));
+		--_yp-e: calc(var(--_radius-e) * sin(var(--_segment)));
+		--_zp-e: calc((var(--_r) / 2 + 0.5) * var(--_radius) + var(--_radius));
+		--_x-s: calc(var(--_xp-s) * 1px);
+		--_y-s: calc(var(--_yp-s) * 1px);
+		--_z-s: calc(var(--_yp-s) * 1px);
+		--_x-e: calc(var(--_xp-e) * 1px);
+		--_y-e: calc(var(--_yp-e) * 1px);
+		--_z-e: calc(var(--_zp-e) * 1px);
+		--_rotation-z: atan2(var(--_yp-s), var(--_xp-s));
+		--_speed: calc((var(--_r) / 2 + 0.5) * 10s + 1s);
+		--_rgb: calc((var(--_r) / 2 + 0.5) * 100 + 155);
+		--_opacity: calc((var(--_r) / 2 + 1));
+		transition: width var(--starfield-transition-duration) var(--starfield-transition-ease);
+		width: calc((var(--starfield-star-max-length) - ((var(--_r) / 2 + 0.5) * var(--starfield-star-max-length))) * 1px);
+		height: max(calc((var(--_r) / 2 + 0.5) * 1px + 0.5px), 1px);
+		opacity: 0;
+		transform: translate(-50%, -50%) translate3d(var(--_x-s), var(--_y-s), var(--_z-s)) rotateZ(var(--_rotation-z));
+		animation: star-animation var(--_speed) normal linear infinite running;
+		animation-delay: calc((var(--_r) / 2 + 0.5) * 5s);
+		background: linear-gradient(to right, rgba(var(--starfield-bg-color-rgb), 0) 33%, rgba(var(--_rgb), var(--_rgb), var(--_rgb), var(--_opacity)) 95%, rgba(var(--starfield-bg-color-rgb), 0));
+		position: absolute;
+}
+
+@keyframes star-animation {
+		0% {
+				opacity: 0;
+				transform: translate(-50%, -50%) translate3d(var(--_x-s), var(--_y-s), var(--_z-s)) rotateZ(var(--_rotation-z))
+		} 
+		35% {
+				opacity: 1;
+		}
+		85% {
+				opacity: 1;
+		}
+		100% {
+				opacity: 0;
+				transform: translate(-50%, -50%) translate3d(var(--_x-e), var(--_y-e), var(--_z-e)) rotateZ(var(--_rotation-z));
+		}
+}
