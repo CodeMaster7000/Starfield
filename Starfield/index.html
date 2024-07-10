@@ -1,0 +1,7 @@
+div(class='starfield')
+	div(class='star-wrapper')
+		- var i = 0
+		while i < 768
+			- i++;
+			- var r = `--_r: ${Math.random() * 2 - 1}`;
+			div(class='star' style=r)
